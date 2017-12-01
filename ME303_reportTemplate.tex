@@ -1,11 +1,11 @@
 \documentclass[12pt,twoside,letterpaper]{article}
 %NOTE: This report format is 
 
-\newcommand{\reporttitle}{Project 1: Report title}
-\newcommand{\reportauthorOne}{Student 1}
-\newcommand{\cidOne}{your id number}
-\newcommand{\reportauthorTwo}{Student 2}
-\newcommand{\cidTwo}{your id number}
+\newcommand{\reporttitle}{Taipei 101 Tower Analysis}
+\newcommand{\reportauthorOne}{John Tattersall}
+\newcommand{\cidOne}{20653035}
+\newcommand{\reportauthorTwo}{David Beckett}
+\newcommand{\cidTwo}{20655588}
 \newcommand{\reporttype}{Coursework}
 \bibliographystyle{plain}
 
@@ -19,60 +19,157 @@
 \begin{document}
 % front page
 \input{titlepage}
-
+\pagestyle{plain}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% table of content
 %If a table of content is needed, simply uncomment the following lines
 %\tableofcontents
-%\newpage
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document
-\section*{Note:}
-\emph{This document is intended to provide a sample structure for the reports in ME303 at the University of Waterloo. }
+\section*{Summary of the Problem}
+The Taipei 101 tower was built in 2004 and is known for having the largest mass damper system in the world[4]. A mass damper system makes the horizontal oscillations of a system caused by external forces approach zero at a much faster rate than if it were left alone to sway. In this case the external forces on the tower are winds and ground tremors that can be quite strong if caused by a typhoon or earthquake. To counteract this, a giant mass is hung by cables 12.8m cables from the 91st floor of the building acting like a giant pendulum(Figure 1)[1]. The tuned mass damper (TMD) system  is tuned to the resonant frequency of the building, so when the building bends, the mass smoothly brings it back to equilibrium without causing any discomfort to the residents of the building.
 
-\section{Summary of the problem}
-\emph{Describe the physical problem under investigation and the briefly summarize the governing equations. Example:}
-
-To tie-in the concepts seen in ME303, we will turn our attention to the fascinating physical phenomenon of sonoluminescence. This occurs when a single bubble, usually of micrometer in size, within a liquid emits a short burst of light when imploding under an externally excited acoustic source. As the energy is concentrated into a point source, local temperatures in the collapsing bubble can reach up to 10,000 K for up to 50 pico seconds and visible light is emitted.
-
-The origin of the light emission is an unsolved physical problem and obviously outside the scope of ME303. For project 1, we will be studying the governing equations behind the bubble oscillation leading up to a the light burst.
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/goose.png} 
-\caption{A goose.}
-\label{goose}
+\includegraphics[width=0.45\textwidth]{figures/Taipei101.png} 
+\caption{The setup of the Tuned Mass Damper in the Taipei 101 tower}
+\label{tower}
 \end{figure}
 
+The tower system can be modeled as a single degree of freedom double mass system, with the mass of the building and the mass of the TMD being separate components as modeled in Figure 2.  
 
-The radius of a bubble under a varying pressure field is defined by the Rayleigh-Plesset equation. This equation is derived using standard conservation law under a number of simplifying assumptions:
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/IMG_4477.jpg} 
+\caption{The system that models the Taipei 101 tower in a SDOF}
+\end{figure}
+\newpage
+This gives rise to the following equations: 
+
 \begin{equation}
-\rho_l \left(R\ddot{R} + \frac{3}{2}\dot{R}^2\right) = p_{gas} -P(t) -P_0 +\frac{R}{c}\frac{d p_{gas}}{dt} - 4\mu \frac{\dot{R}}{R}-\frac{2\sigma}{R}
-\label{RP}
+m_b \ddot{x_b} + k_b x_b + c \left(\dot{x_b} - \dot{x_t}\right) + k_t \left({x_b} - {x_t}\right) = F(t) 
+\label{RP1}
 \end{equation}
-In the above equation $R(t)$ [m] represents the bubble radius. The other terms are: $\rho_l$ [$kg\cdot m^3$]  the density of the liquid, $p_{gas}$ [Pa] the pressure of the gas inside the bubble, $P(t)$ [Pa] the imposed oscillatory pressure field, $P_0$ [Pa] the baseline pressure, $c$ [$m/s$] speed of sound in the liquid, $\mu$ [$Pa\cdot s$] molecular viscosity of the liquid and $\sigma$ [$kg\cdot s^{-2}$] the surface tension at the bubble-water interface.
 
-For more contextual information on the bubble dynamic phenomena, please see the following sources: \cite{Hilgenfeldt1998}, \cite{Kreider2011}, and \cite{Lohse2003}.
+\begin{equation}
+m_t \ddot{x_t} + c \left(\dot{x_t} - \dot{x_b}\right) + k_t \left({x_t} - {x_b}\right) = 0
+\label{RP2}
+\end{equation}
+\newline
+
+Equation \ref{RP1} was derived from the free-body diagram for the forces acting on $m_b$ and Equation \ref{RP2} was derived from the free-body diagram for the forces acting on $m_t$. 
+\newline
+
+The initial conditions were assumed to be $x_b = 0$ and $x_t = 0$, as well as all the respective derivatives, for $t = 0$, for the purpose of this model.
+\newline
+
+The variables and constants used in these equations are defined as follows: 
+\begin{itemize}
+  \item Mass of the TMD = $m_t=660,000$ kg
+  \item Mass of the Building = $m_b = 700000000$ kg
+  \item Horizontal movement of Building = $ x_b $, in meters
+  \item Horizontal movement of TMD = $ x_t $, in meters
+  \item Spring constant of Building = $k_b = 3.69 * 10^9 \: \frac{N}{m} $
+  \item Spring constant of TMD = $k_t = 525399.6 \: \frac{N}{m}$
+  \item Damping constant = $c = 55353.5 \: \frac{Ns}{m}$
+  \item Forcing function = $F(t) = 33064704 $, in Newtons
+\end{itemize}
+
+\section*{Assumptions}
+\begin{itemize}
+	\item The worst case scenario for the building would occur if the the external forces act in resonance with the building's natural frequency. 
+    \item If the force matches the buildings resonance frequency, the maximum force can be considered constant. 
+    \item The maximum amplitude of the TMD can be derived from the maximum force caused by a typhoon strength wind on the building.
+	\item The building's face can be approximated as a rectangle that is 50m wide and 508 m tall[1].
+	\item The TMD can be treated as a solid sphere with radius 5.5m rather than layers of plates.
+    \item The building's spring coefficient can be derived from the properties of the concrete mega-pillars, which can be approximated as one pillar with the same area as 8 of the pillars together.
+    \item The viscous dampers act with a single degree of freedom and apply force only in the horizontal direction.
+    \item The 8 42m length cables that hold up the TMD wrap underneath the sphere and back up again, suspending it at a height of 12.36m below the 91st floor.
+    \item Assume the vertical motion of the TMD is negligible, therefore it can be modeled as a spring, as opposed to a pendulum.
+    \item The internal dampening of the building is negligible in comparison to dampening caused by the suspended mass.  
+    \item Assume that the largest applied force will be caused by typhoon strength winds acting on a building as opposed to the oscillatory force applied by an earthquake.
+\end{itemize}
 
 
+\section*{Calculations}
+$k_t$ was derived through the spring coefficient formula $ F = -kx $ with trigonometry used to obtain the force in the x direction and 1.5m used as the max x distance. $k_b$ was derived from the stress-strain equation and the spring formula to get $k = \frac{YA}{L}$, where Y is the Young's modulus of the concrete pillars, A is the cross-sectional area affected by shear and L is the length of the pillar. c was derived from the formula $c = 2\zeta\sqrt[]{km}$, with zeta being 4.7$\%$ [6], with k and m being the stiffness and the mass of the TMD, respectively.
+\newline
+Equation \ref{RP3} was derived using Gaussian elimination on Equation \ref{RP1} and Equation \ref{RP2} to eliminate the variable $x_b$ resulting in a fourth order linear ODE.
 
-\section{Questions}
-\emph{This section answers the individual questions of the project description.  For each question, provide an answer and short analysis.}
-\subsection*{Question 1: Forced bubble oscillation}
-\subsubsection*{(a)} \emph{References to equations can be written out in latex \eqref{RP}. Similarly, figures  \ref{goose} and sections \ref{Q2} may also be referenced.}
-\subsubsection*{(b)} \emph{Citations require the mybib.tex file to be extended with the desired references. Students can use JabRef (\url{http://www.jabref.org}) to construct the mybib.bib file. Students are invited to link their Mendelay, CiteULike and Zotero account directly to Overleaf. }
+\begin{equation}
+m_b m_t \frac{d^4x_t}{dt^4} + (m_b+m_t)c\frac{d^3x_t}{dt^3} + (m_b k_t+m_t k_b+m_t k_t)\frac{d^2x_t}{dt^2} + ck_b\frac{dx_t}{dt}+k_bk_t = c\frac{dF(t)}{dt}+k_tF(t)
+\label{RP3}
+\end{equation}
 
-\subsection{Question 2: Bubble evolution \label{Q2}}
+Equation \ref{RP3} was solved using software on wolfram-alpha with the known constants plugged into their respective places to produce the general solution in Equation 4:
+\newline
+\begin{center}
+$x_t = c_1 e^{-0.0419187t} sin(0.891162 t) + c_3 e^{-0.0000553153 t} sin(2.29614 t)$ \newline $+ c_2 e^{-0.0419187 t} cos(0.891162 t) + c_4 e^{-0.0000553153 t} cos(2.29614 t) + 0.0111735$ \qquad \qquad \ (4)
+\end{center}
 
+Using the initial conditions the following integrative constants were obtained:
+\begin{itemize}
+\item $c_1$ = -0.0318
+\item $c_2$ = -1.3422
+\item $c_3$ = 0.0028
+\item $c_4$ = 0.00065
+\end{itemize}
 
-\vfill
+\section*{Analysis}
+\subsection*{Max Amplitude}
+The forcing function $F(t)$ is the force being applied to the structure that acts in the x direction only (SDOF system).
 
-\section*{Students' contributions}
-Mr. Goose and Mrs. Goose worked together to understand the problem and write the numerical codes. The summary of the problem and Q2 were written up by Mr. Goose, Q1 and Q3 were completed by Mrs. Goose. Both students corrected the final report.
+For the force of wind acting on the building we have: $F_W = \frac{1}{2} \rho V^2 A$, with $\rho$ being the density of air (1.13$\frac{kg}{m^3}$)[5], V being the average wind speed during a typhoon (48 $\frac{m}{s}$)[8], and A being the area that the wind is pushing on. This results in a force of $3.3*10^7$ Newtons being applied to the building during a typhoon. With this constant force in our differential equation, the maximum amplitude was obtained using Desmos graphing technology, the function for $x_t(t)$ was graphed and a value of 1.331m was obtained as a maximum amplitude for the displacement of the mass.
+
+The damping followed an exponential decay that is shown in (Figure 3), and took a reasonable amount of time to settle into low amplitude oscillation patterns (approx. 10cm at 60 seconds and $<$1 cm at 120 seconds).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/graph.png} 
+\caption{The graph of motion in the x direction of the TMD}
+\end{figure}
+
+\section*{Conclusion}
+In order to simplify the Taipei 101 it was treated as a SDOF system. The mass of the building and the mass of the tuned mass damper caused the  lateral movement of the building to be dampened as the TMD oscillates as shown in (Figure 3). The maximum amplitude of 1.311m fell within the allowable range of 1.5m, which means the model used was not unrealistic.
+
 
 \newpage
-\bibliography{mybib}
+\section*{Students' contributions}
+John and David worked together to understand the problem and write the numerical codes. The assumptions were brainstormed by both David and John. The summary of the problem and assumptions were written by John and the equations and calculations were derived by David. Both students corrected the final report.
 
+\section*{References}
 
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\leftmargin}{0.3in}%
+\setlength{\listparindent}{-0.3in}%
+\setlength{\itemindent}{-0.3in}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]
+[1] Archinomy.com. (2017). Taipei 101 - A case-study | Archinomy. [online] Available at: http://www.archinomy.com/case-studies/671/taipei-101-a-case-study [Accessed 28 Nov. 2017].
+\item[]
+[2] Ching-Chang, C. (2017). Structural Design of Taipei 101 Tower. [ebook] 
+Available at: http://conf.ncree.org.tw/download%5Ci0981026-structural%20design%20of%20taipei%20101%20tower.pdf 
+[Accessed 29 Nov. 2017].
+\item[]
+[3] Desmos Graphing Calculator. (2017). Desmos | Graphing Calculator. [online] Available at: https://www.desmos.com/calculator [Accessed 1 Dec. 2017].
+\item[]
+[4] Effa, D. and Lambert, S. (2017). Taipei 101 Tuned Mass Damper Analysis. [ebook] Available at: \url{https://learn.uwaterloo.ca/d2l/le/content/336286/viewContent/1989179/View?ou=336286} [Accessed 28 Nov. 2017].
+\item[]
+[5] \url{Engineeringtoolbox.com}. (2017). Air - Altitude, Density and Specific Volume. [online] Available at: \url{https://www.engineeringtoolbox.com/air-altitude-density}
+\newline
+\url{-volume-d_195.html} [Accessed 1 Dec. 2017].
+\item[]
+[6] Kourakis, I. (2007). Structural systems and tuned mass dampers of super-tall buildings : case study of Taipei 101. [ebook] Massachusetts Institute of Technology. Available at: https://dspace.mit.edu/handle/1721.1/38947 [Accessed 28 Nov. 2017].
+\item[]
+[7] Rana, R. (2017). Response Control of Structures by Tuned Mass Dampers and their Generalizations. [ebook] Buffalo. Available at: \url{http://www.iitk.ac.in/nicee/wcee/article/11_498.PDF} [Accessed 28 Nov. 2017].
+\item[]
+[8] Tuan, A. and Shang, G. (2017). Vibration Control in a 101-Storey Building Using a Tuned Mass Damper. [ebook] Available at: \url{https://pdfs.semanticscholar.org/996c/ad4e06286d61eacb5c739be697a690c11dd3.pdf} [Accessed 29 Nov. 2017].
+\item[]
+[9] Wolframalpha.com. (2017). Wolfram|Alpha: Making the world’s knowledge computable. [online] Available at: https://www.wolframalpha.com [Accessed 30 Nov. 2017].
+
+\end{list}
 \end{document}
 %%% Local Variables: 
 %%% mode: latex
